@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 # ## 手先の速度における報酬
-def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.1,velreq=0.8) -> torch.Tensor:
+def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.1,velreq=0.1) -> torch.Tensor:
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
     command = env.command_manager.get_command(command_name)   # 7列の配列
     des_pos_b = command[:, :3]               # commandの最初の3列を切り取り
@@ -35,9 +35,7 @@ def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEnti
     normal_dist = torch.distributions.Normal(mu, sigma)
     gau=normal_dist.log_prob(norm).exp()
 
-    # print("asset",asset)
-
-    # print(torch.square(asset.data.applied_torque[:, asset_cfg.joint_ids]))
+    # print("aaaaaaaaaaaaaaaaaaaaaaaaaa",gau* judge_pos.float())
     return gau* judge_pos.float()
 
 

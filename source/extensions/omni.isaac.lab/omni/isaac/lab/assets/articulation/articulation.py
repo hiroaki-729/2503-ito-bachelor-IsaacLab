@@ -98,6 +98,10 @@ class Articulation(AssetBase):
         """
         super().__init__(cfg)
 
+        self._root_state_dep_warn = False
+        self._root_pose_dep_warn = False
+        self._root_vel_dep_warn = False
+
     """
     Properties
     """

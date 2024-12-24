@@ -316,7 +316,7 @@ def energy_consumption(env: ManagerBasedRLEnv, command_name: str, asset_cfg: Sce
     delta=torch.signbit(-torque*angvel).float()
     reward=delta*(torque*angvel)+gamma*torque*torque
     # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",delta)
-    # print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzz",torque*angvel)
+    # print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzz",torch.sum(reward,dim=1))
     # print("instance",asset.num_instances)
     # print("body",asset.num_bodies)
     # t=torch.square(asset.data.applied_torque[:, asset_cfg.joint_ids])
