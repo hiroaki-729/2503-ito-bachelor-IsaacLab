@@ -144,11 +144,11 @@ class RewardsCfg:
         )
     
     # 消費エネルギー
-    # energy = RewTerm(
-    #         func=mdp.energy_consumption,
-    #         weight=-0.0000001,
-    #         params={"command_name": "ee_pose"},
-    #     )
+    energy = RewTerm(
+            func=mdp.energy_consumption,
+            weight=-0.0000001,
+            params={"command_name": "ee_pose"},
+        )
     # position_and_velocity= RewTerm(
     #         func=mdp.position_and_velocity,              #(req=0.7,reqrange=0.1,posrange=0.1),
     #         weight=0.0001,

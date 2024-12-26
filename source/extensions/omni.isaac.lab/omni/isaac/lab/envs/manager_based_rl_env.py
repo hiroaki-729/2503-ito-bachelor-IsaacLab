@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 # needed to import for allowing type-hinting: np.ndarray | None
+
+
 from __future__ import annotations
 
 import gymnasium as gym
@@ -21,7 +23,7 @@ from .common import VecEnvStepReturn
 from .manager_based_env import ManagerBasedEnv
 from .manager_based_rl_env_cfg import ManagerBasedRLEnvCfg
 
-
+import pandas as pd
 class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
     """The superclass for the manager-based workflow reinforcement learning-based environments.
 
@@ -182,14 +184,24 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
 
         # post-step:
         # -- update env counters (used for curriculum generation)
-        self.episode_length_buf += 1  # step in current episode (per env)
-        self.common_step_counter += 1  # total step (common for all envs)
+        self.episode_length_buf += 1  # step in current episode (per env) #エピソード内におけるタイムステップ
+        self.common_step_counter += 1  # total step (common for all envs)  # 総タイムステップ
         # -- check terminations
         self.reset_buf = self.termination_manager.compute()
         self.reset_terminated = self.termination_manager.terminated
-        self.reset_time_outs = self.termination_manager.time_outs
+        self.reset_time_outs = self.termination_manager.time_outs #エピソード終了判定
         # -- reward computation
+        # 報酬
         self.reward_buf = self.reward_manager.compute(dt=self.step_dt)
+        r=self.reward_buf.to('cpu').detach().numpy().copy()
+        print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr", r)
+        # print("tttttttttttttttttttttttttttttttttttttttttttttttttttt",self.common_step_counter)
+        # self.reward_buf=self.reward_buf.cpu()
+        # numpy_array = self.reward_buf.numpy()
+        # df = pd.DataFrame(numpy_array)
+        # df.to_csv('/home2/isaac_env/output.csv', index=False, header=False)
+
+
         # -- reset envs that terminated/timed-out and log the episode information
         reset_env_ids = self.reset_buf.nonzero(as_tuple=False).squeeze(-1)
         if len(reset_env_ids) > 0:

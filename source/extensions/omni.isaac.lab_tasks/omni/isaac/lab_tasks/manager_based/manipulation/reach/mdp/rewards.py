@@ -40,7 +40,6 @@ def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEnti
 
 
 
-
 # # ある一定の速度で叩く
 def position_and_velocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,req=0.7,reqrange=0.1,posrange=0.1) -> torch.Tensor:
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
