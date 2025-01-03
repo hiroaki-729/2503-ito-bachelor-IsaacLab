@@ -23,7 +23,6 @@ from .common import VecEnvStepReturn
 from .manager_based_env import ManagerBasedEnv
 from .manager_based_rl_env_cfg import ManagerBasedRLEnvCfg
 
-import pandas as pd
 class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
     """The superclass for the manager-based workflow reinforcement learning-based environments.
 
@@ -159,7 +158,6 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
         """
         # process actions
         self.action_manager.process_action(action.to(self.device))
-
         # check if we need to do rendering within the physics loop
         # note: checked here once to avoid multiple checks within the loop
         is_rendering = self.sim.has_gui() or self.sim.has_rtx_sensors()
@@ -189,13 +187,19 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
         # -- check terminations
         self.reset_buf = self.termination_manager.compute()
         self.reset_terminated = self.termination_manager.terminated
-        self.reset_time_outs = self.termination_manager.time_outs #エピソード終了判定
+        self.reset_time_outs = self.termination_manager.time_outs   #エピソード終了判定
         # -- reward computation
         # 報酬
         self.reward_buf = self.reward_manager.compute(dt=self.step_dt)
-        r=self.reward_buf.to('cpu').detach().numpy().copy()
-        print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr", r)
-        # print("tttttttttttttttttttttttttttttttttttttttttttttttttttt",self.common_step_counter)
+        r=self.reward_buf.to('cpu').detach().numpy().copy()   # 報酬をnumpyに変換
+        r_mean=r.mean()
+        # r_mean[self.common_step_counter-1]= np.array([np.mean(r)])
+        #　報酬をcsvファイルに書き込み
+        with open('/home2/isaac_env/output.csv', 'a' , encoding= 'utf-8' ) as f:
+            print(r_mean,file=f)
+        # np.savetxt('/home2/isaac_env/output.csv',r_mean)
+        # df.to_csv('/home2/isaac_env/output.csv', index=False, header=False)
+        # print("tttttttttttttttttttttttttttttttttttttttttttttttttttt",r_mean)
         # self.reward_buf=self.reward_buf.cpu()
         # numpy_array = self.reward_buf.numpy()
         # df = pd.DataFrame(numpy_array)

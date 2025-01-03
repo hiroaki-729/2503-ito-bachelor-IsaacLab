@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 # ## 手先の速度における報酬
-def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.1,velreq=0.1) -> torch.Tensor:
+def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.2,velreq=1.5) -> torch.Tensor:
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
     command = env.command_manager.get_command(command_name)   # 7列の配列
     des_pos_b = command[:, :3]               # commandの最初の3列を切り取り

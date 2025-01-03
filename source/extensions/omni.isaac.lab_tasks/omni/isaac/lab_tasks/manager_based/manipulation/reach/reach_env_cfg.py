@@ -76,7 +76,7 @@ class CommandsCfg:
             # pos_y=(-0.2, 0.2),
             # pos_z=(0.15, 0.5),
 
-            pos_x=(1.0, 1.1),            #　ターゲット位置の範囲指定
+            pos_x=(1.3, 1.300000000000000000000000000001),            #　ターゲット位置の範囲指定
             pos_y=(0, 0.0001),
             pos_z=(0, 0.0005),
 
@@ -209,8 +209,8 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the reach end-effector pose tracking environment."""
 
     # Scene settings
-    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
-    scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
+    scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
+    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=10, env_spacing=2.5) #ロボットの数、ロボット同士の距離
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
@@ -226,7 +226,8 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
         # general settings
         self.decimation = 2
         self.sim.render_interval = self.decimation
-        self.episode_length_s = 12.0
+        # self.episode_length_s = 12.0
+        self.episode_length_s = 12.0/12
         self.viewer.eye = (3.5, 3.5, 3.5)
         # simulation settings
         self.sim.dt = 1.0 / 60.0  #微小時間
