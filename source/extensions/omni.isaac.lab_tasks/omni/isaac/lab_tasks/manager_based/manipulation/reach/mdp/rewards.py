@@ -13,30 +13,103 @@ from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.utils.math import combine_frame_transforms, quat_error_magnitude, quat_mul
 if TYPE_CHECKING:
     from omni.isaac.lab.envs import ManagerBasedRLEnv
-
-
-# ## 手先の速度における報酬
-def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.2,velreq=1.5) -> torch.Tensor:
+import numpy as np
+def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.1,velreq=-2.0) -> torch.Tensor:
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
     command = env.command_manager.get_command(command_name)   # 7列の配列
     des_pos_b = command[:, :3]               # commandの最初の3列を切り取り
     des_pos_w, _ = combine_frame_transforms(asset.data.root_state_w[:, :3], asset.data.root_state_w[:, 3:7], des_pos_b)  ## 目標位置の座標
     curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
+
+    pos_h=curr_pos_w[:,2]   # 手先の高さ
+    h=pos_h.to('cpu').detach().numpy().copy()   # numpyに変換
+    h_mean=h.mean()
+    # with open('/home2/isaac_env/h.csv', 'a' , encoding= 'utf-8' ) as f:  # 手先高さをcsvファイルに格納
+    #     print(h_mean,file=f)
+    # h_std=h.std()
+    # with open('/home2/isaac_env/h_std.csv', 'a' , encoding= 'utf-8' ) as f: #手先速度の標準偏差をcsvファイルに格納
+    #     print(h_std,file=f)
     # print("zzzzzzzzzzzzzzzzzz",curr_pos_w[:,2])
     distance = torch.norm(curr_pos_w - des_pos_w, dim=1)        # 手先と目標の距離
     judge_pos=torch.signbit(distance-posreq)                 # distanceがposreq以下かどうかの判定。真なら1、偽なら0を返す。
     # judge_pos=torch.signbit(curr_pos_w[:,2]-posreq) 
     vel=asset.data.body_vel_w [:, asset_cfg.body_ids[0], :3]            # 手先速度
-    handvel=torch.abs(vel[:,1]-velreq)          # 手先の鉛直方向速度誤差
-    norm=handvel*handvel                     # 2乗誤差
-    
-    mu = 0.0     # 平均
-    sigma = 1.0  # 標準偏差
-    normal_dist = torch.distributions.Normal(mu, sigma)
-    gau=normal_dist.log_prob(norm).exp()
 
+    handvel=torch.abs(vel[:,2]-velreq)          # 手先の鉛直方向速度誤差
+    v=vel[:,2].to('cpu').detach().numpy().copy() # numpyに変換
+    vel_mean=v.mean()
+    # np.savetxt('/home2/isaac_env/vel.csv','a', ve,delimiter=",")
+    # with open('/home2/isaac_env/vel.csv', 'a' , encoding= 'utf-8' ) as f: #手先速度をcsvファイルに格納
+    #     print(vel_mean,file=f)
+    # vel_std=v.std()
+    # with open('/home2/isaac_env/vel_std.csv', 'a' , encoding= 'utf-8' ) as f: #手先速度の標準偏差をcsvファイルに格納
+    #     print(vel_std,file=f)
+    norm=handvel*handvel                     # 2乗誤差
+    mu = 0.0     # 平均
+    sigmavel =0.07 # 標準偏差
+    # sigma =0.3  # 標準偏差
+    normal_dist_pos=torch.distributions.Normal(mu, posreq)
+    # gaupos=normal_dist_pos.log_prob(distance).exp()
+    normal_dist = torch.distributions.Normal(mu, sigmavel)
+    gauvel=normal_dist.log_prob(norm).exp()
+    # print("判定",judge_pos)
+    # print("pos",distance)
     # print("aaaaaaaaaaaaaaaaaaaaaaaaaa",gau* judge_pos.float())
-    return gau* judge_pos.float()
+    return gauvel* judge_pos.float()
+    # return gauvel*gaupos
+# ## 手先の速度における報酬
+# def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.5,velreq=-2.0) -> torch.Tensor:
+#     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
+#     command = env.command_manager.get_command(command_name)   # 7列の配列
+#     des_pos_b = command[:, :3]               # commandの最初の3列を切り取り
+#     des_pos_w, _ = combine_frame_transforms(asset.data.root_state_w[:, :3], asset.data.root_state_w[:, 3:7], des_pos_b)  ## 目標位置の座標
+#     curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
+
+#     pos_h=curr_pos_w[:,2]   # 手先の高さ
+#     h=pos_h.to('cpu').detach().numpy().copy()   # numpyに変換
+#     h_mean=h.mean()
+#     # with open('/home2/isaac_env/h.csv', 'a' , encoding= 'utf-8' ) as f:  # 手先高さをcsvファイルに格納
+#     #     print(h_mean,file=f)
+#     # h_std=h.std()
+#     # with open('/home2/isaac_env/h_std.csv', 'a' , encoding= 'utf-8' ) as f: #手先速度の標準偏差をcsvファイルに格納
+#     #     print(h_std,file=f)
+#     # print("zzzzzzzzzzzzzzzzzz",curr_pos_w[:,2])
+#     distance = torch.norm(curr_pos_w - des_pos_w, dim=1)        # 手先と目標の距離
+#     judge_pos=torch.signbit(distance-posreq)                 # distanceがposreq以下かどうかの判定。真なら1、偽なら0を返す。
+#     # judge_pos=torch.signbit(curr_pos_w[:,2]-posreq) 
+#     vel=asset.data.body_vel_w [:, asset_cfg.body_ids[0], :3]            # 手先速度
+
+#     handvel=torch.abs(vel[:,2]-velreq)          # 手先の鉛直方向速度誤差
+#     v=vel[:,2].to('cpu').detach().numpy().copy() # numpyに変換
+#     vel_mean=v.mean()
+#     # np.savetxt('/home2/isaac_env/vel.csv','a', ve,delimiter=",")
+#     # with open('/home2/isaac_env/vel.csv', 'a' , encoding= 'utf-8' ) as f: #手先速度をcsvファイルに格納
+#     #     print(vel_mean,file=f)
+#     # vel_std=v.std()
+#     # with open('/home2/isaac_env/vel_std.csv', 'a' , encoding= 'utf-8' ) as f: #手先速度の標準偏差をcsvファイルに格納
+#     #     print(vel_std,file=f)
+#     norm=handvel*handvel                     # 2乗誤差
+#     mu = 0.0     # 平均
+#     sigmavel =0.05 # 標準偏差
+#     # sigma =0.3  # 標準偏差
+#     normal_dist_pos=torch.distributions.Normal(mu, posreq)
+#     gaupos=normal_dist_pos.log_prob(distance).exp()
+#     normal_dist = torch.distributions.Normal(mu, sigmavel)
+#     gauvel=normal_dist.log_prob(norm).exp()
+#     # print("判定",judge_pos)
+#     # print("pos",distance)
+#     # print("aaaaaaaaaaaaaaaaaaaaaaaaaa",gau* judge_pos.float())
+#     # return gauvel* judge_pos.float()
+#     return gauvel*gaupos
+# 横方向を探索しないようにする
+def side_vel(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+    asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
+    # command = env.command_manager.get_command(command_name)   # 7列の配列
+    vel_x=asset.data.body_vel_w [:, asset_cfg.body_ids[0], :1]            # x軸方向手先速度
+    vel_y=asset.data.body_vel_w [:, asset_cfg.body_ids[0], :2]            # y軸方向手先速度
+    x=torch.norm(vel_x, dim=1)
+    y=torch.norm(vel_y, dim=1)
+    return x+y
 
 
 

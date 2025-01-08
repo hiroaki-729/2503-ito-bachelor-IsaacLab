@@ -195,8 +195,8 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
         r_mean=r.mean()
         # r_mean[self.common_step_counter-1]= np.array([np.mean(r)])
         #　報酬をcsvファイルに書き込み
-        with open('/home2/isaac_env/output.csv', 'a' , encoding= 'utf-8' ) as f:
-            print(r_mean,file=f)
+        # with open('/home2/isaac_env/output.csv', 'a' , encoding= 'utf-8' ) as f:
+        #     print(r_mean,file=f)
         # np.savetxt('/home2/isaac_env/output.csv',r_mean)
         # df.to_csv('/home2/isaac_env/output.csv', index=False, header=False)
         # print("tttttttttttttttttttttttttttttttttttttttttttttttttttt",r_mean)
