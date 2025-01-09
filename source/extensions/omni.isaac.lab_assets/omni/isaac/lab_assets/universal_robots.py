@@ -28,7 +28,6 @@ UR10_CFG = ArticulationCfg(
         usd_path=f"/home2/isaac-env/Collected_ur10_instanceable/ur10_instanceable.usd",
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
-            # disable_gravity=True,
             max_depenetration_velocity=5.0,
         ),
         activate_contact_sensors=False,
@@ -42,7 +41,7 @@ UR10_CFG = ArticulationCfg(
             # "wrist_1_joint": 0.0,
 
             "shoulder_pan_joint": 0.0,
-            "shoulder_lift_joint": -3.141592/6,
+            "shoulder_lift_joint": -3.141592/12,
             # "shoulder_pan_joint": -3.141592/12,
             # "shoulder_lift_joint": 0,
             "elbow_joint": 0.0,

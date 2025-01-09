@@ -143,15 +143,15 @@ class RewardsCfg:
     # task terms
     handvelocity= RewTerm(
             func=mdp.handvelocity,
-            weight=0.01,
+            weight=0.1,
             params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
         )
     # 探索場所制限
-    # side_vel= RewTerm(
-    #         func=mdp.side_vel,
-    #         weight=-0.001,
-    #         params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
-    #     )
+    side_vel= RewTerm(
+            func=mdp.side_vel,
+            weight=-0.0001,
+            params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
+        )
 
     # 消費エネルギー
     energy = RewTerm(
@@ -220,8 +220,8 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the reach end-effector pose tracking environment."""
 
     # Scene settings
-    scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
-    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
+    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
+    scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
@@ -241,4 +241,4 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
         self.episode_length_s = 12.0/9
         self.viewer.eye = (3.5, 3.5, 3.5)
         # simulation settings
-        self.sim.dt = 1.0 / 60.0  #微小時間
+        self.sim.dt = 1.0 / (60.0)  #微小時間

@@ -156,6 +156,7 @@ class Articulation(AssetBase):
         Note:
             Use this view with caution. It requires handling of tensors in a specific way.
         """
+        # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",self._root_physx_view)
         return self._root_physx_view
 
     """
@@ -459,6 +460,7 @@ class Articulation(AssetBase):
             limits = limits.cpu()
         # set into internal buffers
         torque_limit_all = self.root_physx_view.get_dof_max_forces()
+        # print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",torque_limit_all)
         torque_limit_all[env_ids, joint_ids] = limits
         # set into simulation
         self.root_physx_view.set_dof_max_forces(torque_limit_all.cpu(), indices=physx_env_ids.cpu())
@@ -566,6 +568,7 @@ class Articulation(AssetBase):
         body_ids: Sequence[int] | slice | None = None,
         env_ids: Sequence[int] | None = None,
     ):
+        # ここは入っていない
         """Set external force and torque to apply on the asset's bodies in their local frame.
 
         For many applications, we want to keep the applied external force on rigid bodies constant over a period of
@@ -1045,7 +1048,7 @@ class Articulation(AssetBase):
 
         # soft joint position limits (recommended not to be too close to limits).
         joint_pos_limits = self.root_physx_view.get_dof_limits() # 関節可動域設定
-
+        # print("aaaaaaaaaaaaaaaaaaaaaaaa",joint_pos_limits)
 
         # joint_pos_limits = torch.tensor([[[-0.0000000000000001,  0.000000000000001],
         #  [-3.141592/6-0.0000000000001,  -3.141592/6+0.00000000000000001],
@@ -1228,6 +1231,7 @@ class Articulation(AssetBase):
             self._data.default_fixed_tendon_offset = self.root_physx_view.get_fixed_tendon_offsets().clone()
 
     def _apply_actuator_model(self):
+        # これは入っている
         """Processes joint commands for the articulation by forwarding them to the actuators.
 
         The actions are first processed using actuator models. Depending on the robot configuration,

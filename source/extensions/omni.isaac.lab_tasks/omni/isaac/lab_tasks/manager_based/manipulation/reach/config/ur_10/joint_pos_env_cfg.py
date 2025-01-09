@@ -33,7 +33,7 @@ class UR10ReachEnvCfg(ReachEnvCfg):
         self.events.reset_robot_joints.params["position_range"] = (0.75, 1.25)
         # override reward  
         self.rewards.handvelocity.params["asset_cfg"].body_names = ["ee_link"]
-        # self.rewards.side_vel.params["asset_cfg"].body_names = ["ee_link"]  
+        self.rewards.side_vel.params["asset_cfg"].body_names = ["ee_link"]  
         # self.rewards.position_and_velocity.params["asset_cfg"].body_names = ["ee_link"] 
         # self.rewards.end_effector_position_tracking.params["asset_cfg"].body_names = ["ee_link"]
         # self.rewards.end_effector_position_tracking_fine_grained.params["asset_cfg"].body_names = ["ee_link"]
