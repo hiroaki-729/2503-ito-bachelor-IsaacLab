@@ -811,16 +811,14 @@ def reset_joints_by_scale(
     # get default joint state
     joint_pos = asset.data.default_joint_pos[env_ids].clone()  # 各関節初期姿勢
     joint_vel = asset.data.default_joint_vel[env_ids].clone()  # 各関節初期速度
-
     # scale these values randomly
     joint_pos *= math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device)
     joint_vel *= math_utils.sample_uniform(*velocity_range, joint_vel.shape, joint_vel.device)
-
     # print("sssssssssssssssssssssssssssssssssssssssss", math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device) ) 
     # clamp joint pos to limits
     joint_pos_limits = asset.data.soft_joint_pos_limits[env_ids]  #各関節位置の制限
     # print("sssssssssssssssssssssssssssssssssssssssss", math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device) ) 
-    # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", joint_pos_limits[..., 0]) 
+    # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", joint_pos_limits) 
     # print(asset)
     # print("sssssssssssssssssssssssssssssssssssssssss",joint_pos_limits[..., 1])
     joint_pos = joint_pos.clamp_(joint_pos_limits[..., 0], joint_pos_limits[..., 1]) # clamp_(a,b):a以下ならa,b以上ならbにする

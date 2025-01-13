@@ -132,6 +132,7 @@ class ManagerBasedEnv:
         # note: when started in extension mode, first call sim.reset_async() and then initialize the managers
         if builtins.ISAAC_LAUNCHED_FROM_TERMINAL is False:
             print("[INFO]: Starting the simulation. This may take a few seconds. Please wait...")
+            # print("11111111111111111111111111111111111111111111111111111111111111111111111")
             with Timer("[INFO]: Time taken for simulation start", "simulation_start"):
                 self.sim.reset()
             # add timeline event to load managers

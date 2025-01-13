@@ -31,6 +31,16 @@ def time_out(env: ManagerBasedRLEnv) -> torch.Tensor:
     """Terminate the episode when the episode length exceeds the maximum episode length."""
     return env.episode_length_buf >= env.max_episode_length
 
+# 叩いたら終了
+def judge_hit(env: ManagerBasedRLEnv,command_name: str,asset_cfg: SceneEntityCfg) -> torch.Tensor:
+    asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
+    curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
+    pos_h=curr_pos_w[:,2]   # 手先の高さ
+    return pos_h<=0.13
+
+
+
+
 
 def command_resample(env: ManagerBasedRLEnv, command_name: str, num_resamples: int = 1) -> torch.Tensor:
     """Terminate the episode based on the total number of times commands have been re-sampled.

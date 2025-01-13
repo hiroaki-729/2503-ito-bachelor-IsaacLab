@@ -416,6 +416,7 @@ def last_action(env: ManagerBasedEnv, action_name: str | None = None) -> torch.T
     entire action tensor is returned.
     """
     if action_name is None:
+        # print("dddddddddddddddddddddddddddddddddddddddddddddddddddddd",env.action_manager.action)
         return env.action_manager.action
     else:
         return env.action_manager.get_term(action_name).raw_actions

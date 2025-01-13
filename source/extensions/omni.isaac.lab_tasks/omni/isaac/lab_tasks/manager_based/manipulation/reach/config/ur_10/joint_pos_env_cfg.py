@@ -33,17 +33,19 @@ class UR10ReachEnvCfg(ReachEnvCfg):
         self.events.reset_robot_joints.params["position_range"] = (0.75, 1.25)
         # override reward  
         self.rewards.handvelocity.params["asset_cfg"].body_names = ["ee_link"]
-        self.rewards.side_vel.params["asset_cfg"].body_names = ["ee_link"]  
+        # self.rewards.side_vel.params["asset_cfg"].body_names = ["ee_link"]  
         # self.rewards.position_and_velocity.params["asset_cfg"].body_names = ["ee_link"] 
         # self.rewards.end_effector_position_tracking.params["asset_cfg"].body_names = ["ee_link"]
         # self.rewards.end_effector_position_tracking_fine_grained.params["asset_cfg"].body_names = ["ee_link"]
         # self.rewards.end_effector_orientation_tracking.params["asset_cfg"].body_names = ["ee_link"] # 手先位置によって報酬決定(ee_link:手先位置)
 
+        self.terminations.judge_hit.params["asset_cfg"].body_names = ["ee_link"]
         
         # override actions
         self.actions.arm_action = mdp.JointPositionActionCfg(
             asset_name="robot", joint_names=[".*"], scale=0.5, use_default_offset=True
         )
+        
         # override command generator body
         # end-effector is along x-direction
         self.commands.ee_pose.body_name = "ee_link"
@@ -51,12 +53,12 @@ class UR10ReachEnvCfg(ReachEnvCfg):
 
 
 # @configclass
-# class UR10ReachEnvCfg_PLAY(UR10ReachEnvCfg):
-#     def __post_init__(self):
-#         # post init of parent
-#         super().__post_init__()
-#         # make a smaller scene for play
-#         self.scene.num_envs = 50
-#         self.scene.env_spacing = 2.5
-#         # disable randomization for play
-#         self.observations.policy.enable_corruption = False
+class UR10ReachEnvCfg_PLAY(UR10ReachEnvCfg):
+    def __post_init__(self):
+        # post init of parent
+        super().__post_init__()
+        # make a smaller scene for play
+        self.scene.num_envs = 50
+        self.scene.env_spacing = 2.5
+        # disable randomization for play
+        self.observations.policy.enable_corruption = False

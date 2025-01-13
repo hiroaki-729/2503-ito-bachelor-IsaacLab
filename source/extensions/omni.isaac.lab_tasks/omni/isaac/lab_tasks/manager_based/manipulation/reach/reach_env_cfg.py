@@ -143,28 +143,19 @@ class RewardsCfg:
     # task terms
     handvelocity= RewTerm(
             func=mdp.handvelocity,
-            weight=0.1,
-            params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
-        )
-    # 探索場所制限
-    side_vel= RewTerm(
-            func=mdp.side_vel,
-            weight=-0.0001,
+            weight=0.5,
+            # weight=500000000000000000.0,
             params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
         )
 
-    # 消費エネルギー
+    # # 消費エネルギー
     energy = RewTerm(
             func=mdp.energy_consumption,
             # weight=-0.00000001,
-            weight=-0.000001,
+            weight=-0.00001,
             params={"command_name": "ee_pose"},
         )
-    # position_and_velocity= RewTerm(
-    #         func=mdp.position_and_velocity,              #(req=0.7,reqrange=0.1,posrange=0.1),
-    #         weight=0.0001,
-    #         params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
-    # )
+   
     # end_effector_position_tracking = RewTerm(
     #     func=mdp.position_command_error,
     #     weight=-0.2,
@@ -192,11 +183,16 @@ class RewardsCfg:
     # track_ang_vel_z_exp = RewTerm(
     #     func=mdp.track_ang_vel_z_exp, weight=0.000000001, params={"command_name": "ee_pose", "std": 0.5}
     # )
+# 終了条件
 @configclass
 class TerminationsCfg:
     """Termination terms for the MDP."""
 
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
+    judge_hit=DoneTerm(func=mdp.judge_hit, 
+                       time_out=False,
+                       params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING),"command_name": "ee_pose"},
+    )
 
 
 @configclass
@@ -220,8 +216,8 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the reach end-effector pose tracking environment."""
 
     # Scene settings
-    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
-    scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
+    scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
+    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
@@ -238,7 +234,7 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
         self.decimation = 2
         self.sim.render_interval = self.decimation
         # self.episode_length_s = 12.0
-        self.episode_length_s = 12.0/9
+        self.episode_length_s = 12.0
         self.viewer.eye = (3.5, 3.5, 3.5)
         # simulation settings
         self.sim.dt = 1.0 / (60.0)  #微小時間

@@ -130,6 +130,7 @@ class AssetConverterBase(abc.ABC):
     @property
     def usd_path(self) -> str:
         """The absolute path to the generated USD file."""
+        # print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
         return os.path.join(self.usd_dir, self.usd_file_name)
 
     @property

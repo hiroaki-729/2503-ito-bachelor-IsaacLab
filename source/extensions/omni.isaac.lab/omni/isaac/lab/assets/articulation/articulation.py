@@ -1048,14 +1048,6 @@ class Articulation(AssetBase):
 
         # soft joint position limits (recommended not to be too close to limits).
         joint_pos_limits = self.root_physx_view.get_dof_limits() # 関節可動域設定
-        # print("aaaaaaaaaaaaaaaaaaaaaaaa",joint_pos_limits)
-
-        # joint_pos_limits = torch.tensor([[[-0.0000000000000001,  0.000000000000001],
-        #  [-3.141592/6-0.0000000000001,  -3.141592/6+0.00000000000000001],
-        #  [-0.000000000000001,  0.00000001],
-        #  [-3.141592/2-0.0000000001,  -3.141592/2+0.0000000000000000001],
-        #  [-0.000000000001,  0.000000000001],
-        #  [-0.000000000001,  0.000000000001]]])
 
         # print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",joint_pos_limits)
         # print("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",joint_pos_l)

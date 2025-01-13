@@ -32,7 +32,7 @@ class FileCfg(RigidObjectSpawnerCfg, DeformableObjectSpawnerCfg):
         If they are set to a value, then the properties are modified on the spawned prim in a nested manner.
         This is done by calling the respective function with the specified properties.
     """
-
+    # print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
     scale: tuple[float, float, float] | None = None
     """Scale of the asset. Defaults to None, in which case the scale is not modified."""
 
@@ -86,7 +86,7 @@ class UsdFileCfg(FileCfg):
         If they are set to a value, then the properties are modified on the spawned prim in a nested manner.
         This is done by calling the respective function with the specified properties.
     """
-
+    # print("ssssssssssssssssssssssssssssssssssssssssssssssssss")
     func: Callable = from_files.spawn_from_usd
 
     usd_path: str = MISSING
