@@ -462,6 +462,8 @@ class Articulation(AssetBase):
         torque_limit_all = self.root_physx_view.get_dof_max_forces()
         # print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",torque_limit_all)
         torque_limit_all[env_ids, joint_ids] = limits
+        # print("ddddddddddddddddddddddddddddddddddddddddd",torque_limit_all)
+        # print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",env_ids)
         # set into simulation
         self.root_physx_view.set_dof_max_forces(torque_limit_all.cpu(), indices=physx_env_ids.cpu())
 

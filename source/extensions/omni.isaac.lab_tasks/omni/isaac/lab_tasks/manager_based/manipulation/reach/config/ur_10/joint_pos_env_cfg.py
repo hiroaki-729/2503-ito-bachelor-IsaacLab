@@ -33,6 +33,7 @@ class UR10ReachEnvCfg(ReachEnvCfg):
         self.events.reset_robot_joints.params["position_range"] = (0.75, 1.25)
         # override reward  
         self.rewards.handvelocity.params["asset_cfg"].body_names = ["ee_link"]
+        # self.rewards.handvelocity_hard.params["asset_cfg"].body_names = ["ee_link"]
         # self.rewards.side_vel.params["asset_cfg"].body_names = ["ee_link"]  
         # self.rewards.position_and_velocity.params["asset_cfg"].body_names = ["ee_link"] 
         # self.rewards.end_effector_position_tracking.params["asset_cfg"].body_names = ["ee_link"]
@@ -45,7 +46,6 @@ class UR10ReachEnvCfg(ReachEnvCfg):
         self.actions.arm_action = mdp.JointPositionActionCfg(
             asset_name="robot", joint_names=[".*"], scale=0.5, use_default_offset=True
         )
-        
         # override command generator body
         # end-effector is along x-direction
         self.commands.ee_pose.body_name = "ee_link"

@@ -107,8 +107,9 @@ class ObservationsCfg:
         # joint_vel = ObsTerm(func=mdp.joint_vel_rel, noise=Unoise(n_min=-0.01, n_max=0.01))
 
 
-        joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=Unoise(n_min=-0.01, n_max=0.01))
-        joint_vel = ObsTerm(func=mdp.joint_vel_rel, noise=Unoise(n_min=-0.01, n_max=0.01))
+        joint_pos = ObsTerm(func=mdp.joint_pos_rel,noise=Unoise(n_min=-0.01, n_max=0.01))
+        print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm",joint_pos)
+        joint_vel = ObsTerm(func=mdp.joint_vel_rel,noise=Unoise(n_min=-0.01, n_max=0.01))
 
         pose_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "ee_pose"})
         actions = ObsTerm(func=mdp.last_action)
@@ -129,8 +130,8 @@ class EventCfg:
         func=mdp.reset_joints_by_scale,
         mode="reset",
         params={
-            # "position_range": (0.1, 1.1),
             "position_range": (0.5, 1.5),
+            # "position_range": (0.0, 0.0),
             "velocity_range": (0.0, 0.0),
         },
     )
@@ -144,15 +145,18 @@ class RewardsCfg:
     handvelocity= RewTerm(
             func=mdp.handvelocity,
             weight=0.5,
-            # weight=500000000000000000.0,
             params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
         )
-
+    # handvelocity_hard= RewTerm(
+    #         func=mdp.handvelocity_hard,
+    #         weight=0,
+    #         params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
+    #     )
     # # 消費エネルギー
     energy = RewTerm(
             func=mdp.energy_consumption,
-            # weight=-0.00000001,
-            weight=-0.00001,
+            weight=-0.00000001,
+            # weight=-0.0001,
             params={"command_name": "ee_pose"},
         )
    
@@ -206,6 +210,12 @@ class CurriculumCfg:
     # joint_vel = CurrTerm(
     #     func=mdp.modify_reward_weight, params={"term_name": "joint_vel", "weight": -0.001, "num_steps": 4500}
     # )
+    # handvelocity= CurrTerm(
+    #     func=mdp.modify_reward_weight, params={"term_name": "handvelocity", "weight": 0, "num_steps": 4000}
+    # )
+    # handvelocity_hard= CurrTerm(
+    #     func=mdp.modify_reward_weight, params={"term_name": "handvelocity_hard", "weight": 0.5, "num_steps": 4000}
+    # )
 ##
 # Environment configuration
 ##
@@ -216,8 +226,8 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the reach end-effector pose tracking environment."""
 
     # Scene settings
-    scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
-    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
+    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
+    scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
@@ -234,7 +244,9 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
         self.decimation = 2
         self.sim.render_interval = self.decimation
         # self.episode_length_s = 12.0
-        self.episode_length_s = 12.0
+        self.episode_length_s = 3.0
         self.viewer.eye = (3.5, 3.5, 3.5)
         # simulation settings
-        self.sim.dt = 1.0 / (60.0)  #微小時間
+        # self.sim.dt = 1.0 / (60.0)  #微小時間
+        self.sim.dt = 1.0 / 100  #微小時間
+

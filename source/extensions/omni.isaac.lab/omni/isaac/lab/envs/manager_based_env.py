@@ -132,7 +132,6 @@ class ManagerBasedEnv:
         # note: when started in extension mode, first call sim.reset_async() and then initialize the managers
         if builtins.ISAAC_LAUNCHED_FROM_TERMINAL is False:
             print("[INFO]: Starting the simulation. This may take a few seconds. Please wait...")
-            # print("11111111111111111111111111111111111111111111111111111111111111111111111")
             with Timer("[INFO]: Time taken for simulation start", "simulation_start"):
                 self.sim.reset()
             # add timeline event to load managers
@@ -173,6 +172,7 @@ class ManagerBasedEnv:
 
         This is the lowest time-decimation at which the simulation is happening.
         """
+        # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",self.cfg.sim.dt)
         return self.cfg.sim.dt
 
     @property
@@ -181,6 +181,7 @@ class ManagerBasedEnv:
 
         This is the time-step at which the environment steps forward.
         """
+        # print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",self.cfg.sim.dt * self.cfg.decimation)
         return self.cfg.sim.dt * self.cfg.decimation
 
     @property

@@ -32,11 +32,19 @@ def time_out(env: ManagerBasedRLEnv) -> torch.Tensor:
     return env.episode_length_buf >= env.max_episode_length
 
 # 叩いたら終了
-def judge_hit(env: ManagerBasedRLEnv,command_name: str,asset_cfg: SceneEntityCfg) -> torch.Tensor:
+def judge_hit(env: ManagerBasedRLEnv,command_name: str,asset_cfg: SceneEntityCfg,posreq=0.02,velreq=-2.0) -> torch.Tensor:
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
     curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
     pos_h=curr_pos_w[:,2]   # 手先の高さ
-    return pos_h<=0.13
+    vel=asset.data.body_vel_w [:, asset_cfg.body_ids[0], :3]            # 手先速度
+    handvel=torch.abs(vel[:,2]-velreq)          # 手先の鉛直方向速度誤差
+    h=(pos_h-posreq<=0) & (pos_h+posreq>=0)
+    v=handvel<=0.1
+    judge_h=pos_h<posreq
+    # print(h)
+    # print(v)
+    # return h*v
+    return judge_h
 
 
 

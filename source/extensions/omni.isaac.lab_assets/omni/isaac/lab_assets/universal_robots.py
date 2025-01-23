@@ -16,7 +16,6 @@ import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.actuators import ImplicitActuatorCfg
 from omni.isaac.lab.assets.articulation import ArticulationCfg
 from omni.isaac.lab.utils.assets import ISAACLAB_NUCLEUS_DIR
-from omni.isaac.lab.sim.converters import UrdfConverter, UrdfConverterCfg
 ##
 # Configuration
 ##
@@ -31,7 +30,6 @@ UR10_CFG = ArticulationCfg(
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
             max_depenetration_velocity=5.0,
-            # max_linear_velocity=0,
         ),
         activate_contact_sensors=False,
     ),
@@ -52,27 +50,29 @@ UR10_CFG = ArticulationCfg(
         joint_pos={
             # "shoulder_pan_joint": 0.0,
             # "shoulder_lift_joint": -1.712,
-            # "elbow_joint": 1.712,
+            # "elbow_joint": -1.5,
             # "wrist_1_joint": 0.0,
 
             "shoulder_pan_joint": 0.0,
-            # "shoulder_lift_joint": -3.141592/12,
-            "shoulder_lift_joint": -3.141592/18,
+            # "shoulder_lift_joint": -3.141592/2,
+            "shoulder_lift_joint": -3.141592/30,
             # "shoulder_pan_joint": -3.141592/12,
             # "shoulder_lift_joint": 0,
             "elbow_joint": 0.0,
             "wrist_1_joint": -3.141592/2,
-
-
+            # "wrist_1_joint": -2.5,
             "wrist_2_joint": 0.0,
             "wrist_3_joint": 0.0,
-        },
+        }
+        # joint_vel={
+        #     "shoulder_lift_joint": 2.0944/10,
+        # }
     ),
     actuators={
         "arm": ImplicitActuatorCfg(
             joint_names_expr=[".*"],
-            velocity_limit=100.0,
-            effort_limit=87.0/10,
+            # velocity_limit=100.0,
+            # effort_limit=87.0,
             stiffness=800.0,
             damping=40.0,
         ),
