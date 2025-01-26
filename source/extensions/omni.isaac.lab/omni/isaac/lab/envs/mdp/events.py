@@ -706,7 +706,6 @@ def reset_root_state_with_random_orientation(
     asset: RigidObject | Articulation = env.scene[asset_cfg.name]
     # get default root state
     root_states = asset.data.default_root_state[env_ids].clone()
-
     # poses
     range_list = [pose_range.get(key, (0.0, 0.0)) for key in ["x", "y", "z"]]
     ranges = torch.tensor(range_list, device=asset.device)
@@ -810,17 +809,26 @@ def reset_joints_by_scale(
     asset: Articulation = env.scene[asset_cfg.name]
     # get default joint state
     joint_pos = asset.data.default_joint_pos[env_ids].clone()  # 各関節初期姿勢
-    # print(joint_pos)
     joint_vel = asset.data.default_joint_vel[env_ids].clone()  # 各関節初期速度
+    # print(asset.data.body_pos_w)
+    curr_pos_w =asset.data.body_pos_w
+    curr_pos=curr_pos_w[:, -1, :]
+    # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",curr_pos)
+
+
+
+
     # scale these values randomly
-    joint_pos *= math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device)
-    joint_vel *= math_utils.sample_uniform(*velocity_range, joint_vel.shape, joint_vel.device)
+    # joint_pos *= math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device) #ランダムで初期姿勢与えている
+    # joint_vel *= math_utils.sample_uniform(*velocity_range, joint_vel.shape, joint_vel.device)
+    # print(joint_pos)
     # print("sssssssssssssssssssssssssssssssssssssssss", math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device) ) 
     # clamp joint pos to limits
     joint_pos_limits = asset.data.soft_joint_pos_limits[env_ids]  #各関節位置の制限
     # print("sssssssssssssssssssssssssssssssssssssssss", math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device) ) 
     # print("sssssssssssssssssssssssssssssssssssssssss",joint_pos_limits[..., 1])
     joint_pos = joint_pos.clamp_(joint_pos_limits[..., 0], joint_pos_limits[..., 1]) # clamp_(a,b):a以下ならa,b以上ならbにする
+    # print("3333333333333333333333333333333333",joint_pos)
     # clamp joint vel to limits
     joint_vel_limits = asset.data.soft_joint_vel_limits[env_ids]  #各関節速度の制限
     joint_vel = joint_vel.clamp_(-joint_vel_limits, joint_vel_limits)

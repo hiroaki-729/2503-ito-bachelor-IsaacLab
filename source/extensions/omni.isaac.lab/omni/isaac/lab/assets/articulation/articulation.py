@@ -995,7 +995,6 @@ class Articulation(AssetBase):
         # -- joint commands (explicit)
         self._data.computed_torque = torch.zeros_like(self._data.default_joint_pos)
         self._data.applied_torque = torch.zeros_like(self._data.default_joint_pos)
-
         # -- tendons
         if self.num_fixed_tendons > 0:
             self._data.fixed_tendon_stiffness = torch.zeros(

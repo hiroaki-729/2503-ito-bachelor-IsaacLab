@@ -21,6 +21,7 @@ from omni.isaac.lab_assets import UR10_CFG  # isort: skip
 ##
 
 
+
 @configclass
 class UR10ReachEnvCfg(ReachEnvCfg):
     def __post_init__(self):
@@ -61,4 +62,4 @@ class UR10ReachEnvCfg_PLAY(UR10ReachEnvCfg):
         self.scene.num_envs = 50
         self.scene.env_spacing = 2.5
         # disable randomization for play
-        self.observations.policy.enable_corruption = False
+        self.observations.policy.enable_corruption =False

@@ -309,7 +309,18 @@ def energy_consumption(env: ManagerBasedRLEnv, command_name: str, asset_cfg: Sce
     # asset: RigidObject = env.scene[asset_cfg.name]
     asset: Articulation = env.scene[asset_cfg.name]
     torque=asset.data.applied_torque[:, asset_cfg.joint_ids]        #各関節トルク
+    # print(torque)
     angvel=asset.data.joint_vel   # 各関節角速度
+    torque_p=torque[:, 1:4].to('cpu').detach().numpy().copy()   # numpyに変換
+    # with open('/home2/isaac_env/torque.csv', 'a' , encoding= 'utf-8' ) as f: #トルクをcsvファイルに格納
+    #     for row in torque_p:
+    #         f.write(",".join(f"{val:.4e}" for val in row) + "\n")
+
+    angvel_p=angvel[:, 1:4].to('cpu').detach().numpy().copy()   # numpyに変換
+    # with open('/home2/isaac_env/angvel.csv', 'a' , encoding= 'utf-8' ) as f: #角速度をcsvファイルに格納
+    #     for row in angvel_p:
+    #         f.write(",".join(f"{val:.4e}" for val in row) + "\n")
+
     # jointname=asset.joint_names # 各関節の名前が格納された配列
     # bodyname=asset.body_names   # 各部位の名前が格納された配列
     # timestep=env.common_step_counter # タイムステップ(整数)
@@ -317,12 +328,11 @@ def energy_consumption(env: ManagerBasedRLEnv, command_name: str, asset_cfg: Sce
     delta=torch.signbit(-torque*angvel).float()
     reward=delta*(torque*angvel)+gamma*torque*torque
     pos=asset.data.joint_pos[:, 1:4].to('cpu').detach().numpy().copy() ## 肩、肘、手首の関節角度
-    # print(asset.data.joint_pos)
     # with open('/home2/isaac_env/pos.csv', 'a' , encoding= 'utf-8' ) as f: #関節角度をcsvファイルに格納
     #     for row in pos:
     #         f.write(",".join(f"{val:.4e}" for val in row) + "\n")
     printr=torch.sum(reward,dim=1).to('cpu').detach().numpy().copy()
     pr=printr.min()  #*env.step_dt*(-0.00000001)
-    # with open('/home2/isaac_env/r_energy.csv', 'a' , encoding= 'utf-8' ) as f:  # タイムステップにおける最大報酬
-    #         print(pr,file=f)
+    with open('/home2/isaac_env/r_energy.csv', 'a' , encoding= 'utf-8' ) as f:  # タイムステップにおける最大報酬
+            print(pr,file=f)
     return torch.sum(reward,dim=1)

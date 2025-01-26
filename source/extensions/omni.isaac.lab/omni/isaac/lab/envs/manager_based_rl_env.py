@@ -22,7 +22,6 @@ from omni.isaac.lab.managers import CommandManager, CurriculumManager, RewardMan
 from .common import VecEnvStepReturn
 from .manager_based_env import ManagerBasedEnv
 from .manager_based_rl_env_cfg import ManagerBasedRLEnvCfg
-
 class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
     """The superclass for the manager-based workflow reinforcement learning-based environments.
 
@@ -193,8 +192,8 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
         printr=self.reward_buf.to('cpu').detach().numpy().copy()
         r=printr.max()
         # 　報酬をcsvファイルに書き込み
-        # with open('/home2/isaac_env/output.csv', 'a' , encoding= 'utf-8' ) as f:
-        #     print(r,file=f)
+        with open('/home2/isaac_env/output.csv', 'a' , encoding= 'utf-8' ) as f:
+            print(r,file=f)
         # self.reward_buf=self.reward_buf.cpu()
 
 

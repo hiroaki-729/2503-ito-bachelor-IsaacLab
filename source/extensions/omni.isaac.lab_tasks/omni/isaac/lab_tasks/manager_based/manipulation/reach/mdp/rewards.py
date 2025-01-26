@@ -8,27 +8,26 @@ from __future__ import annotations
 import torch
 from typing import TYPE_CHECKING
 
-from omni.isaac.lab.assets import RigidObject
+from omni.isaac.lab.assets import RigidObject,Articulation
 from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.utils.math import combine_frame_transforms, quat_error_magnitude, quat_mul
 if TYPE_CHECKING:
     from omni.isaac.lab.envs import ManagerBasedRLEnv
 import numpy as np
-def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.02,velreq=-2.0) -> torch.Tensor:
+def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,posreq=0.02,velreq=-1.0) -> torch.Tensor:
     # velreq=-3.2
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
     command = env.command_manager.get_command(command_name)   # 7列の配列
     des_pos_b = command[:, :3]               # commandの最初の3列を切り取り
     des_pos_w, _ = combine_frame_transforms(asset.data.root_state_w[:, :3], asset.data.root_state_w[:, 3:7], des_pos_b)  ## 目標位置の座標
     curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
-    # print("asaaaaaaaaaaaaaaaaaaaaaaaaaaaa",asset.data.computed_torque)
+    # print("asaaaaaaaaaaaaaaaaaaaaaaaaaaaa",asset_cfg.body_ids[0])
     # print("cccccccccccccccccccccccccccccc",asset.data.applied_torque)
-    # print(asset.data.body_state_w)
+    # print(curr_pos_w)
     pos_h=curr_pos_w[:,2]   # 手先の高さ
     h=pos_h.to('cpu').detach().numpy().copy()   # numpyに変換
     # with open('/home2/isaac_env/h.csv', 'a' , encoding= 'utf-8' ) as f:  # 手先高さをcsvファイルに格納
     #     print(h[0],file=f)
-    # print("zzzzzzzzzzzzzzzzzz",curr_pos_w[:,2])
     distance = torch.norm(curr_pos_w - des_pos_w, dim=1)        # 手先と目標の距離
     judge_pos=torch.signbit(distance-posreq)                 # distanceがposreq以下かどうかの判定。真なら1、偽なら0を返す。
     judge_h=torch.signbit(pos_h-posreq) 
@@ -48,10 +47,10 @@ def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEnti
     h_req=norm* judge_h.double()
     printr=h_req.double().to('cpu').detach().numpy().copy()
     pr=printr.max()*env.step_dt*0.5
-    # with open('/home2/isaac_env/r_handvel.csv', 'a' , encoding= 'utf-8' ) as f:  # タイムステップにおける最大報酬
-    #         print(pr,file=f)
-    # print("judge_h",pr)
+    with open('/home2/isaac_env/r_handvel.csv', 'a' , encoding= 'utf-8' ) as f:  # タイムステップにおける最大報酬
+            print(pr,file=f)
     return norm* judge_h.double()
+    # return pos_h
 
 
 

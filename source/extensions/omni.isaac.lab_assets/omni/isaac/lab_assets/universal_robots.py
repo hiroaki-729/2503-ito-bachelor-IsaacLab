@@ -26,7 +26,7 @@ UR10_CFG = ArticulationCfg(
 
         # usd_path=f"{ISAACLAB_NUCLEUS_DIR}/Robots/UniversalRobots/UR10/ur10_instanceable.usd",
         # usd_path=f"/home2/isaac-env/Collected_ur10_instanceable/ur10_instanceable.usd",
-        usd_path=f"/home2/isaac-env/isaaclab/lib/python3.10/site-packages/isaacsim/extscache/omni.importer.urdf-1.14.1+106.0.0.lx64.r.cp310/data/urdf/robots/ur10//urdf/ur10/ur10.usd",
+        usd_path=f"/home2/isaac-env/isaaclab/lib/python3.10/site-packages/isaacsim/extscache/omni.importer.urdf-1.14.1+106.0.0.lx64.r.cp310/data/urdf/robots/ur10/urdf/ur10/ur10.usd",
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
             max_depenetration_velocity=5.0,
@@ -56,7 +56,7 @@ UR10_CFG = ArticulationCfg(
             "shoulder_pan_joint": 0.0,
             # "shoulder_lift_joint": -3.141592/2,
             "shoulder_lift_joint": -3.141592/30,
-            # "shoulder_pan_joint": -3.141592/12,
+            # "shoulder_lift_joint": -3.141592/12,
             # "shoulder_lift_joint": 0,
             "elbow_joint": 0.0,
             "wrist_1_joint": -3.141592/2,

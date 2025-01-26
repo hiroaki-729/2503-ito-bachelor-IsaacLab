@@ -108,7 +108,6 @@ class ObservationsCfg:
 
 
         joint_pos = ObsTerm(func=mdp.joint_pos_rel,noise=Unoise(n_min=-0.01, n_max=0.01))
-        print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm",joint_pos)
         joint_vel = ObsTerm(func=mdp.joint_vel_rel,noise=Unoise(n_min=-0.01, n_max=0.01))
 
         pose_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "ee_pose"})
@@ -155,8 +154,8 @@ class RewardsCfg:
     # # 消費エネルギー
     energy = RewTerm(
             func=mdp.energy_consumption,
-            weight=-0.00000001,
-            # weight=-0.0001,
+            # weight=-0.00000001,
+            weight=-0.0001,
             params={"command_name": "ee_pose"},
         )
    
@@ -226,8 +225,8 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the reach end-effector pose tracking environment."""
 
     # Scene settings
-    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
-    scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
+    scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
+    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
@@ -248,5 +247,5 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
         self.viewer.eye = (3.5, 3.5, 3.5)
         # simulation settings
         # self.sim.dt = 1.0 / (60.0)  #微小時間
+        # self.sim.dt = 1.0 / 100  #微小時間
         self.sim.dt = 1.0 / 100  #微小時間
-
