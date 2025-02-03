@@ -73,8 +73,10 @@ UR10_CFG = ArticulationCfg(
             joint_names_expr=[".*"],
             # velocity_limit=100.0,
             # effort_limit=87.0,
+            # effort_limit=0,
             stiffness=800.0,
             damping=40.0,
+
         ),
     },
 )

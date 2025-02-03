@@ -144,10 +144,12 @@ class RewardsCfg:
     handvelocity= RewTerm(
             func=mdp.handvelocity,
             weight=0.5,
+            # weight=0,
             params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
         )
-    # handvelocity_hard= RewTerm(
-    #         func=mdp.handvelocity_hard,
+    # sin= RewTerm(
+    #         func=mdp.sin,
+    #         # weight=0.5,
     #         weight=0,
     #         params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
     #     )
@@ -158,7 +160,7 @@ class RewardsCfg:
             weight=-0.0001,
             params={"command_name": "ee_pose"},
         )
-   
+    
     # end_effector_position_tracking = RewTerm(
     #     func=mdp.position_command_error,
     #     weight=-0.2,
@@ -212,9 +214,9 @@ class CurriculumCfg:
     # handvelocity= CurrTerm(
     #     func=mdp.modify_reward_weight, params={"term_name": "handvelocity", "weight": 0, "num_steps": 4000}
     # )
-    # handvelocity_hard= CurrTerm(
-    #     func=mdp.modify_reward_weight, params={"term_name": "handvelocity_hard", "weight": 0.5, "num_steps": 4000}
-    # )
+    energy= CurrTerm(
+        func=mdp.modify_reward_weight, params={"term_name": "energy", "weight": -0.01, "num_steps": 4000}
+    )
 ##
 # Environment configuration
 ##
@@ -247,5 +249,5 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
         self.viewer.eye = (3.5, 3.5, 3.5)
         # simulation settings
         # self.sim.dt = 1.0 / (60.0)  #微小時間
-        # self.sim.dt = 1.0 / 100  #微小時間
         self.sim.dt = 1.0 / 100  #微小時間
+        # self.sim.dt = 1.0 / 1000000  #微小時間

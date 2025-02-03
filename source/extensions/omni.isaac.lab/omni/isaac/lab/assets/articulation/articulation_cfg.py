@@ -25,7 +25,6 @@ class ArticulationCfg(AssetBaseCfg):
         """Linear velocity of the root in simulation world frame. Defaults to (0.0, 0.0, 0.0)."""
         ang_vel: tuple[float, float, float] = (0.0, 0.0, 0.0)
         """Angular velocity of the root in simulation world frame. Defaults to (0.0, 0.0, 0.0)."""
-
         # joint state
         joint_pos: dict[str, float] = {".*": 0.0}
         """Joint positions of the joints. Defaults to 0.0 for all joints."""

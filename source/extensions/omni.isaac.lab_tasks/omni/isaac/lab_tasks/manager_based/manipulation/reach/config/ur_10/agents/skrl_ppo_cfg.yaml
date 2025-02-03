@@ -47,6 +47,7 @@ agent:
   discount_factor: 0.99
   lambda: 0.95
   learning_rate: 1.0e-03
+  # learning_rate: 5.0e-03
   learning_rate_scheduler: KLAdaptiveLR
   learning_rate_scheduler_kwargs:
     kl_threshold: 0.01
@@ -77,6 +78,6 @@ agent:
 # https://skrl.readthedocs.io/en/latest/api/trainers/sequential.html
 trainer:
   class: SequentialTrainer
-  # timesteps: 16000
+  # timesteps: 15000
   timesteps: 8000
   environment_info: log

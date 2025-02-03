@@ -825,8 +825,6 @@ def reset_joints_by_scale(
     # print("sssssssssssssssssssssssssssssssssssssssss", math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device) ) 
     # clamp joint pos to limits
     joint_pos_limits = asset.data.soft_joint_pos_limits[env_ids]  #各関節位置の制限
-    # print("sssssssssssssssssssssssssssssssssssssssss", math_utils.sample_uniform(*position_range, joint_pos.shape, joint_pos.device) ) 
-    # print("sssssssssssssssssssssssssssssssssssssssss",joint_pos_limits[..., 1])
     joint_pos = joint_pos.clamp_(joint_pos_limits[..., 0], joint_pos_limits[..., 1]) # clamp_(a,b):a以下ならa,b以上ならbにする
     # print("3333333333333333333333333333333333",joint_pos)
     # clamp joint vel to limits

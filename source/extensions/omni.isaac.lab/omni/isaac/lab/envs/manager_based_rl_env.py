@@ -192,8 +192,8 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
         printr=self.reward_buf.to('cpu').detach().numpy().copy()
         r=printr.max()
         # 　報酬をcsvファイルに書き込み
-        with open('/home2/isaac_env/output.csv', 'a' , encoding= 'utf-8' ) as f:
-            print(r,file=f)
+        # with open('/home2/isaac_env/output.csv', 'a' , encoding= 'utf-8' ) as f:
+        #     print(r,file=f)
         # self.reward_buf=self.reward_buf.cpu()
 
 
