@@ -68,7 +68,7 @@ def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEnti
     # return pos_h
 
 # 手先の運動軌道を正弦波で与える
-def sin(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,width=0.2,period=1.0) -> torch.Tensor:
+def sin(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,width=0.15,period=1.0) -> torch.Tensor:
     # velreq=-3.2
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
     curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
@@ -80,8 +80,15 @@ def sin(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,wid
     error=pos_h-target
     sigmapos =0.2 # 標準偏差
     reward=torch.exp(-error*error/(2*sigmapos*sigmapos))
-    # with open('/home2/isaac_env/sin.csv', 'a' , encoding= 'utf-8' ) as f: #目標の手先高さをcsvファイルに格納
+    # with open('/home2/isaac_env/sin.csv', 'a' , encoding= 'utf-8' ) as f: #報酬をcsvファイルに格納
     #     print(target,file=f)
+    r=reward.to('cpu').detach().numpy().copy() 
+    with open('/home2/isaac_env/sin.csv', 'a' , encoding= 'utf-8' ) as f: #報酬をcsvファイルに格納
+        print(r.max(),file=f)
+    pos_h=curr_pos_w[:,2]   # 手先の高さ
+    h=pos_h.to('cpu').detach().numpy().copy()   # numpyに変換
+    # with open('/home2/isaac_env/h.csv', 'a' , encoding= 'utf-8' ) as f:  # 手先高さをcsvファイルに格納
+    #     print(h[0],file=f)
     return reward
 
 def position_command_error(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg) -> torch.Tensor:
