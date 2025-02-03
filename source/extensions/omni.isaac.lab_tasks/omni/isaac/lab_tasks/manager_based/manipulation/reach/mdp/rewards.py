@@ -68,7 +68,7 @@ def handvelocity(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEnti
     # return pos_h
 
 # 手先の運動軌道を正弦波で与える
-def sin(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,width=0.3,period=1.0) -> torch.Tensor:
+def sin(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,width=0.2,period=1.0) -> torch.Tensor:
     # velreq=-3.2
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
     curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
@@ -76,14 +76,13 @@ def sin(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg,wid
     # print(pos_h)
     timestep=env.common_step_counter # タイムステップ(整数)
     maxtimestep=env.max_episode_length # 1エピソードにおける最大タイムステップ
-    error=pos_h-width*math.sin(period*(timestep/maxtimestep)*2*math.pi-math.pi/2)-width
+    target=width*math.sin(period*(timestep/maxtimestep)*2*math.pi-math.pi/2)+width+0.2
+    error=pos_h-target
     sigmapos =0.2 # 標準偏差
     reward=torch.exp(-error*error/(2*sigmapos*sigmapos))
-    # sin=width*math.sin(period*(timestep/maxtimestep)*2*math.pi-math.pi/2)+width
     # with open('/home2/isaac_env/sin.csv', 'a' , encoding= 'utf-8' ) as f: #目標の手先高さをcsvファイルに格納
-    #     print(sin,file=f)
-    # return reward
-    return 0
+    #     print(target,file=f)
+    return reward
 
 def position_command_error(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg) -> torch.Tensor:
     """Penalize tracking of the position error using L2-norm.

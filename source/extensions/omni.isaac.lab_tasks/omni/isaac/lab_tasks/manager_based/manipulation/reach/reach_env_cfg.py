@@ -141,18 +141,18 @@ class RewardsCfg:
     """Reward terms for the MDP."""
     """ee_poseは69行目に記載"""
     # task terms
-    handvelocity= RewTerm(
-            func=mdp.handvelocity,
+    # handvelocity= RewTerm(
+    #         func=mdp.handvelocity,
+    #         weight=0.5,
+    #         # weight=0,
+    #         params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
+    #     )
+    sin= RewTerm(
+            func=mdp.sin,
             weight=0.5,
             # weight=0,
             params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
         )
-    # sin= RewTerm(
-    #         func=mdp.sin,
-    #         # weight=0.5,
-    #         weight=0,
-    #         params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
-    #     )
     # # 消費エネルギー
     energy = RewTerm(
             func=mdp.energy_consumption,
@@ -193,11 +193,11 @@ class RewardsCfg:
 class TerminationsCfg:
     """Termination terms for the MDP."""
 
-    time_out = DoneTerm(func=mdp.time_out, time_out=True)
-    judge_hit=DoneTerm(func=mdp.judge_hit, 
-                       time_out=False,
-                       params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING),"command_name": "ee_pose"},
-    )
+    # time_out = DoneTerm(func=mdp.time_out, time_out=True)
+    # judge_hit=DoneTerm(func=mdp.judge_hit, 
+    #                    time_out=False,
+    #                    params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING),"command_name": "ee_pose"},
+    # )
 
 
 @configclass
