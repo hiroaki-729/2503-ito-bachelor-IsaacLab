@@ -309,7 +309,7 @@ def energy_consumption(env: ManagerBasedRLEnv, command_name: str, asset_cfg: Sce
     # asset: RigidObject = env.scene[asset_cfg.name]
     asset: Articulation = env.scene[asset_cfg.name]
     torque=asset.data.applied_torque[:, asset_cfg.joint_ids]        #各関節トルク
-    # print(torque)
+    # torque=asset.data.computed_torque[:, asset_cfg.joint_ids]
     angvel=asset.data.joint_vel   # 各関節角速度
     torque_p=torque[:, 1:4].to('cpu').detach().numpy().copy()   # numpyに変換
     # with open('/home2/isaac_env/torque.csv', 'a' , encoding= 'utf-8' ) as f: #トルクをcsvファイルに格納
@@ -324,6 +324,7 @@ def energy_consumption(env: ManagerBasedRLEnv, command_name: str, asset_cfg: Sce
     # jointname=asset.joint_names # 各関節の名前が格納された配列
     # bodyname=asset.body_names   # 各部位の名前が格納された配列
     # timestep=env.common_step_counter # タイムステップ(整数)
+    # time=env.episode_length_buf  # エピソード開始からの経過時間
     # maxtimestep=env.max_episode_length # 1エピソードにおける最大タイムステップ
     delta=torch.signbit(-torque*angvel).float()
     reward=delta*(torque*angvel)+gamma*torque*torque
@@ -331,8 +332,32 @@ def energy_consumption(env: ManagerBasedRLEnv, command_name: str, asset_cfg: Sce
     # with open('/home2/isaac_env/pos.csv', 'a' , encoding= 'utf-8' ) as f: #関節角度をcsvファイルに格納
     #     for row in pos:
     #         f.write(",".join(f"{val:.4e}" for val in row) + "\n")
+
+    # print(env.action_manager.action)
+    # print(asset.data.joint_pos_target)
+    act=env.action_manager.action.to('cpu').detach().numpy().copy()
+    # with open('/home2/isaac_env/act.csv', 'a' , encoding= 'utf-8' ) as f: #関節角度をcsvファイルに格納
+    #     for row in act:
+    #         f.write(",".join(f"{val:.4e}" for val in row) + "\n")
     printr=torch.sum(reward,dim=1).to('cpu').detach().numpy().copy()
     pr=printr.min()  #*env.step_dt*(-0.00000001)
-    with open('/home2/isaac_env/r_energy.csv', 'a' , encoding= 'utf-8' ) as f:  # タイムステップにおける最大報酬
-            print(pr,file=f)
+    # with open('/home2/isaac_env/r_energy.csv', 'a' , encoding= 'utf-8' ) as f:  # タイムステップにおける最大報酬
+    #         print(pr,file=f)
     return torch.sum(reward,dim=1)
+
+# 躍度最小化
+def jerk_opt(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    # asset: RigidObject = env.scene[asset_cfg.name]
+    asset: Articulation = env.scene[asset_cfg.name]
+    jerk=asset.data.joint_jerk[:, 1:4]
+    jerk_opt=torch.exp(-jerk*jerk/200000000)
+    jerkr=torch.sum(jerk_opt,dim=1).to('cpu').detach().numpy().copy().min()
+    # with open('/home2/isaac_env/r_jerk.csv', 'a' , encoding= 'utf-8' ) as f:  # タイムステップにおける最大報酬
+    #         print(jerkr,file=f)
+    # print("jjjjjjjjjjjj",jerk_opt)
+    # print("acc",asset.data.joint_acc[:, 1:4])
+    pos=asset.data.joint_pos[:, 1:4].to('cpu').detach().numpy().copy() ## 肩、肘、手首の関節角度
+    with open('/home2/isaac_env/pos.csv', 'a' , encoding= 'utf-8' ) as f: #関節角度をcsvファイルに格納
+        for row in pos:
+            f.write(",".join(f"{val:.4e}" for val in row) + "\n")
+    return torch.sum(jerk_opt,dim=1)

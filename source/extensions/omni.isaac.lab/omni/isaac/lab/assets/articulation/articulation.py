@@ -363,8 +363,10 @@ class Articulation(AssetBase):
         self._data.joint_vel[env_ids, joint_ids] = velocity    # 初期速度
         # self._data._previous_joint_vel[env_ids, joint_ids] = velocity  # 直前の速度？
         self.data._previous_joint_vel = self._root_physx_view.get_dof_velocities().clone()
-
+        # self._previous_joint_acc = torch.zeros((env_ids, joint_ids))
         self._data.joint_acc[env_ids, joint_ids] = 0.0        # 初期加速度
+        # self._data.joint_jerk[env_ids, joint_ids] = 0.0 
+        # self.data._previous_joint_acc[env_ids, joint_ids] = 0.0 
         # Need to invalidate the buffer to trigger the update with the new root pose.
         self._data._body_state_w.timestamp = -1.0
         # set into simulation

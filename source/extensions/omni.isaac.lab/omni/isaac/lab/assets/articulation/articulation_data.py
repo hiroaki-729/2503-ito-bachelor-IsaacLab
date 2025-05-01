@@ -61,22 +61,22 @@ class ArticulationData:
 
         # Initialize history for finite differencing
         self._previous_joint_vel = self._root_physx_view.get_dof_velocities().clone()
-
         # Initialize the lazy buffers.
         self._root_state_w = TimestampedBuffer()
         self._body_state_w = TimestampedBuffer()
         self._body_acc_w = TimestampedBuffer()
         self._joint_pos = TimestampedBuffer()
         self._joint_acc = TimestampedBuffer()
+        self._joint_jerk = TimestampedBuffer()
+        self.pre_joint_acc = TimestampedBuffer()
         self._joint_vel = TimestampedBuffer()
-
     def update(self, dt: float):
         # update the simulation timestamp
         self._sim_timestamp += dt
         # Trigger an update of the joint acceleration buffer at a higher frequency
         # since we do finite differencing.
         self.joint_acc
-
+        self.joint_jerk
     ##
     # Names.
     ##
@@ -344,6 +344,9 @@ class ArticulationData:
     @property
     def joint_acc(self):
         """Joint acceleration of all joints. Shape is (num_instances, num_joints)."""
+        # if self._joint_acc.timestamp==0:
+            # print(self._joint_acc)
+        # print(self._sim_timestamp)
         if self._joint_acc.timestamp < self._sim_timestamp:
             # note: we use finite differencing to compute acceleration
             time_elapsed = self._sim_timestamp - self._joint_acc.timestamp
@@ -351,8 +354,24 @@ class ArticulationData:
             self._joint_acc.timestamp = self._sim_timestamp
             # update the previous joint velocity
             self._previous_joint_vel[:] = self.joint_vel
+        # print("acc",self._joint_acc)
         return self._joint_acc.data
-
+# 躍度
+    @property
+    def joint_jerk(self):
+        """Joint acceleration of all joints. Shape is (num_instances, num_joints)."""
+        if self._joint_acc.timestamp==0:
+            self.pre_joint_acc=self._joint_acc.data
+            self._joint_jerk.data = self._joint_acc.data
+        if self._joint_jerk.timestamp < self._sim_timestamp:
+            # note: we use finite differencing to compute acceleration
+            time_elapsed = self._sim_timestamp - self._joint_jerk.timestamp
+            self._joint_jerk.data = (self.joint_acc - self.pre_joint_acc) / time_elapsed
+            self._joint_jerk.timestamp = self._sim_timestamp
+            # update the previous joint velocity
+            self.pre_joint_acc[:] = self.joint_acc
+        # print("jerk",self._joint_jerk)
+        return self._joint_jerk.data
     ##
     # Derived properties.
     ##

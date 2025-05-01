@@ -421,6 +421,7 @@ def last_action(env: ManagerBasedEnv, action_name: str | None = None) -> torch.T
         # print("dddddddddddddddddddddddddddddddddddddddddddddddddddddd",env.action_manager.action)
         return env.action_manager.action
     else:
+        # print("dddddddddddddddddddddddddddddddddddddddddddddddddddddd",env.action_manager.get_term(action_name).raw_actions)
         return env.action_manager.get_term(action_name).raw_actions
 
 
