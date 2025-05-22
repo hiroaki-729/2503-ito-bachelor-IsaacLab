@@ -40,8 +40,6 @@ class UR10ReachEnvCfg(ReachEnvCfg):
         # self.rewards.end_effector_position_tracking.params["asset_cfg"].body_names = ["ee_link"]
         # self.rewards.end_effector_position_tracking_fine_grained.params["asset_cfg"].body_names = ["ee_link"]
         # self.rewards.end_effector_orientation_tracking.params["asset_cfg"].body_names = ["ee_link"] # 手先位置によって報酬決定(ee_link:手先位置)
-
-        self.terminations.judge_hit.params["asset_cfg"].body_names = ["ee_link"]
         
         # override actions
         self.actions.arm_action = mdp.JointPositionActionCfg(

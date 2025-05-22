@@ -158,12 +158,12 @@ class RewardsCfg:
     #         weight=-0.0001,
     #         params={"command_name": "ee_pose"},
     #     )
-    jerk_opt = RewTerm(
-            func=mdp.jerk_opt,
-            # weight=-0.00000001,
-            weight=-0.0001,
-            params={"command_name": "ee_pose"},
-        ) 
+    # jerk_opt = RewTerm(
+    #         func=mdp.jerk_opt,
+    #         # weight=-0.00000001,
+    #         weight=-0.0001,
+    #         params={"command_name": "ee_pose"},
+    #     ) 
     # end_effector_position_tracking = RewTerm(
     #     func=mdp.position_command_error,
     #     weight=-0.2,
@@ -197,11 +197,6 @@ class TerminationsCfg:
     """Termination terms for the MDP."""
 
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
-    judge_hit=DoneTerm(func=mdp.judge_hit, 
-                       time_out=False,
-                       params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING),"command_name": "ee_pose"},
-    )
-
 
 @configclass
 class CurriculumCfg:
@@ -232,8 +227,8 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the reach end-effector pose tracking environment."""
 
     # Scene settings
-    scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
-    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=10, env_spacing=2.5)
+    # scene: ReachSceneCfg = ReachSceneCfg(num_envs=4096, env_spacing=2.5)
+    scene: ReachSceneCfg = ReachSceneCfg(num_envs=10, env_spacing=2.5)
     # scene: ReachSceneCfg = ReachSceneCfg(num_envs=1, env_spacing=2.5) #ロボットの数、ロボット同士の距離
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
