@@ -34,7 +34,7 @@ ur10を用いて、初期姿勢より下にある水平面を叩く運動タス�
 |大事な情報|ディレクトリ|
 |----|---------|
 |初期状態指定する関数(reset_joints_by_scale) |https://github.com/hiroaki-729/2503-ito-bachelor-IsaacLab/blob/master/source/extensions/omni.isaac.lab/omni/isaac/lab/envs/mdp/events.py|
-|各エージェントが得た報酬(reward_buf)||
+|各エージェントが得た報酬(reward_buf)|https://github.com/hiroaki-729/2503-ito-bachelor-IsaacLab/blob/master/source/extensions/omni.isaac.lab/omni/isaac/lab/envs/manager_based_rl_env.py|
 ## 引用先
 引用したIsaacLabの情報は以下の通り。
 ### URL
