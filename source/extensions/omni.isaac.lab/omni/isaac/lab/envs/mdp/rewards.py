@@ -357,7 +357,7 @@ def jerk_opt(env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCf
     # print("jjjjjjjjjjjj",jerk_opt)
     # print("acc",asset.data.joint_acc[:, 1:4])
     pos=asset.data.joint_pos[:, 1:4].to('cpu').detach().numpy().copy() ## 肩、肘、手首の関節角度
-    with open('/home2/isaac_env/pos.csv', 'a' , encoding= 'utf-8' ) as f: #関節角度をcsvファイルに格納
-        for row in pos:
-            f.write(",".join(f"{val:.4e}" for val in row) + "\n")
+    # with open('/home2/isaac_env/pos.csv', 'a' , encoding= 'utf-8' ) as f: #関節角度をcsvファイルに格納
+    #     for row in pos:
+    #         f.write(",".join(f"{val:.4e}" for val in row) + "\n")
     return torch.sum(jerk_opt,dim=1)

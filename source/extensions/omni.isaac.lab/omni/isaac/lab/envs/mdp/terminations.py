@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 from omni.isaac.lab.assets import Articulation, RigidObject
 from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.sensors import ContactSensor
-
+from omni.isaac.lab.utils.math import combine_frame_transforms
 if TYPE_CHECKING:
     from omni.isaac.lab.envs import ManagerBasedRLEnv
     from omni.isaac.lab.managers.command_manager import CommandTerm
@@ -31,20 +31,16 @@ def time_out(env: ManagerBasedRLEnv) -> torch.Tensor:
     """Terminate the episode when the episode length exceeds the maximum episode length."""
     return env.episode_length_buf >= env.max_episode_length
 
-# 叩いたら終了
+# 手先が到達したら終了
 def judge_hit(env: ManagerBasedRLEnv,command_name: str,asset_cfg: SceneEntityCfg,posreq=0.02,velreq=-2.0) -> torch.Tensor:
     asset: RigidObject = env.scene[asset_cfg.name]  # どの報酬関数でもここは同じ
+    command = env.command_manager.get_command(command_name)   # 7列の配列
+    des_pos_b = command[:, :3]               # commandの最初の3列を切り取り
+    des_pos_w, _ = combine_frame_transforms(asset.data.root_state_w[:, :3], asset.data.root_state_w[:, 3:7], des_pos_b)  ## 目標位置の座標
     curr_pos_w = asset.data.body_state_w[:, asset_cfg.body_ids[0], :3]  # type: ignore       # 手先位置の座標
-    pos_h=curr_pos_w[:,2]   # 手先の高さ
-    vel=asset.data.body_vel_w [:, asset_cfg.body_ids[0], :3]            # 手先速度
-    handvel=torch.abs(vel[:,2]-velreq)          # 手先の鉛直方向速度誤差
-    h=(pos_h-posreq<=0) & (pos_h+posreq>=0)
-    v=handvel<=0.1
-    judge_h=pos_h<posreq
-    # print(h)
-    # print(v)
-    # return h*v
-    return judge_h
+    distance = torch.norm(curr_pos_w - des_pos_w, dim=1)        # 手先と目標の距離
+    judge_pos=torch.signbit(distance-posreq)                 # distanceがposreq以下かどうかの判定。真なら1、偽なら0を返す。
+    return judge_pos
 
 
 
